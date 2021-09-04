@@ -1,0 +1,81 @@
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="/images/LC_logo.ico">
+    <title>La Casona | {{title}}</title>
+    <!-- Bootstrap 4.6 -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+      integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l"
+      crossorigin="anonymous"
+    />
+    <!-- Bootstrap 5-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous">
+    <!-- JQuery -->
+    <script
+      src="https://code.jquery.com/jquery-3.6.0.min.js"
+      integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+      crossorigin="anonymous"
+    ></script>
+    <!-- Format ARS -->
+    <script src="/javascripts/format-ars.js"></script>
+    <!-- Custom CSS-->
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+  </head>
+  <body>
+    <header class="container">
+        <nav class="navbar navbar-expand navbar-light">
+          <img src="/images/LC_logo.ico" width="50" height="50" class="d-inline-block align-center">
+          <a class="navbar-brand" href="/">La Casona</a>
+          <div class="collapse navbar-collapse justify-content-end nav1" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a
+                class="nav-link {{ternaryEqual title "Home" "active" ""}}"
+                href="/"
+              >Home</a>
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link {{ternaryEqual title "Mozo" "active" ""}}"
+                href="/mozo"
+              >Mozo</a>
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link {{ternaryEqual title "Cocina" "active" ""}}"
+                href="/cocina"
+              >Cocina</a>
+            </li>
+          </ul>
+        </div>
+        </nav>
+    </header>
+    <main>
+      {{{body}}}
+    </main>
+    <footer class="row">
+      <p class="col text-center mt-5">
+        © 2021 LA CASONA |
+        <a>Lucas Chirione</a>
+      </p>
+    </footer>
+    <!--Script-->
+   
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns"
+      crossorigin="anonymous"
+    ></script>
+   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossorigin="anonymous"></script>
+    <script>
+      $().ready(function () {
+        $('[data-bs-toggle="tooltip"]').each(function (i, e) {
+          new bootstrap.Tooltip(e);
+        });
+      });
+    </script>
+  </body>
+</html>

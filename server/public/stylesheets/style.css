@@ -1,0 +1,89 @@
+@media screen and (max-width: 574px){
+  .carousel-inner{
+      height: 500px;
+      width: auto;
+     
+  }
+} 
+
+
+body {
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  color: black;
+  background-color: #eeebdd;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* CAROUSEL */
+.d-block {
+  height: 90vh;
+
+}
+
+/* BARRA DE NAVEGACION */
+.navbar {
+  background-color: #eeebdd;
+}
+.cardd {
+  text-align: center;
+}
+#navbarNav ul li a {
+ 
+  font-size: 20px;
+  font-family: 'Times New Roman', Times, serif;
+ 
+ 
+}
+#navbarNav ul li a:hover {
+  color: red;
+}
+
+/*PRECENTACION*/
+.menu {
+    margin:10px auto;
+    display:block;
+}
+p {
+    text-align: center;
+   
+    font-size: 2vh;
+}
+
+/*CARTA MENU*/
+div[class|="col"] {
+  border: 5px solid white;
+  padding:initial;
+  position: relative;
+  display: inline-block;
+  
+}
+.card-title {
+  position: absolute;  
+  background: #ccc;  
+  width: auto;
+  bottom: 0;             
+  color: brown;
+  margin-left: 30px;
+
+}
+
+/* MOZO */
+label.required::after {
+  content: '∗';
+  font-size: 1.5em;
+  color: red;
+}
+
+
+/* COCINA */
+button[data-estado]::after {
+  content: ' ' attr(data-estado);
+  font-weight: bold;
+}
+
+.border{
+  color: black;
+}

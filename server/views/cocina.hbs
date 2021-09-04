@@ -1,0 +1,84 @@
+<div class="col container">
+  <h4 class="text-center">COCINA</h4>
+
+  <div class="row">
+    {{#each pedidos}}
+      <div class="col-12 col-md-6 p-1">
+        <div class="p-1 border rounded shadow-sm">
+          <button
+            data-id="{{ this._id }}"
+            data-estado="{{ this.estado }}"
+            class="float-end btn"
+          >Estado:</button>
+
+          <h5>Pedido <b>{{ this.numero }}</b></h5>
+
+          <p>Mesa: <b>{{ this.t_mesa.numero }} - {{ this.t_mesa.descripcion }}</b></p>
+
+          <p>Mozo: <b>{{ this.t_mozo.nombre }} {{ this.t_mozo.apellido }}</b></p>
+
+          <ul>
+            {{#each this.consumibles }}
+              <li>{{ this.cantidad }} unid. de «{{ this.titulo }}»</li>
+            {{/each}}
+          </ul>
+        </div>
+      </div>
+    {{/each}}
+  </div>
+</div>
+
+<script>
+  const estados = {
+    'En preparación': {
+      siguiente: 'Retirar pedido',
+      clase: 'btn-outline-danger',
+    },
+    'Retirar pedido': {
+      siguiente: 'Entregado',
+      clase: 'btn-outline-success',
+    },
+    'Entregado': {
+      siguiente: false,
+      clase: 'btn-outline-primary',
+    },
+  };
+
+  function claseBotonSegunEstado (boton) {
+    $(boton)
+      .removeClass('btn-outline-danger btn-outline-success btn-outline-primary')
+      .addClass(estados[$(boton).attr('data-estado')].clase)
+    ;
+  }
+
+  $().ready(function () {
+    $('button').each( (i, e) => claseBotonSegunEstado(e) );
+
+    $('button').on('click', ev => {
+      let boton = $(ev.target).closest('button');
+
+      if (! estados[boton.attr('data-estado')].siguiente) {
+        alert('Pedido ya fue entregado, recargue la paguina');
+        return false;
+      }
+
+      fetch('/pedido', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          _id: boton.attr('data-id'),
+          estado: estados[boton.attr('data-estado')].siguiente,
+        }),
+      })
+        .then( r => r.json() )
+        .then( d => {
+          boton.attr('data-estado', d.estado);
+          claseBotonSegunEstado(boton);
+        } )
+        .catch( e => alert(e) )
+      ;
+    });
+  });
+</script>

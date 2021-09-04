@@ -1,0 +1,212 @@
+<div class="container">
+  <form class="col shadow" action="/pedido" method="POST" enctype="application/json">
+    <div class="row my-3">
+      <div class="col">
+        <div class="form-floating">
+          <select class="form-select" id="mozo" name="mozo" required>
+            <option value="">- Seleccione -</option>
+            {{#each mozos}}
+            <option value="{{ this._id }}">{{this.nombre}} {{this.apellido}}</option>
+            {{/each}}
+          </select>
+          <label for="mozo" class="required">MOZO</label>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="form-floating">
+          <select class="form-select" id="mesa" name="mesa" required>
+            <option value="">- Seleccione  -</option>
+            {{#each mesas}}
+            <option value="{{ this._id }}">{{this.numero}} - {{this.descripcion}}</option>
+            {{/each}}
+          </select>
+          <label for="mesa" class="required">MESA</label>
+        </div>
+      </div>
+    </div>
+
+    <table class="table table-striped">
+      <thead>
+        <th class="text-center">Consumible</th>
+        <th class="text-center">Precio</th>
+        <th class="text-center">Cantidad</th>
+        <th class="text-center">Importe</th>
+      </thead>
+      <tbody>
+        {{#each consumibles}}
+        <tr>
+          <td class="w-auto">
+            <input
+              type="hidden"
+              name="consumible[{{@index}}][_id]"
+              value="{{this._id}}"
+            />
+            <input
+              type="text"
+              readonly
+              class="form-control"
+              name="consumible[{{@index}}][titulo]"
+              value="{{this.titulo}}"
+            />
+          </td>
+
+          <td class="w-15">
+            <input
+              type="text"
+              readonly
+              class="form-control text-end"
+              data-precio="{{this.precio}}"
+              value="$ {{formatARS this.precio}}"
+            />
+          </td>
+
+          <td class="w-15">
+            <input
+              type="number"
+              min="0"
+              step="1"
+              class="form-control text-end sin-flechas"
+              name="consumible[{{@index}}][cantidad]"
+              value="0"
+              title="Puedes usar la rueda del ratón o las flechas del teclado"
+            />
+          </td>
+
+          <td class="w-15">
+            <input
+              type="hidden"
+              name="consumible[{{@index}}][importe]"
+              value="0"
+            />
+            <output class="form-control text-end"></output>
+          </td>
+        </tr>
+        {{/each}}
+      </tbody>
+      <tfoot>
+        <tr>
+          <th colspan="2" class="text-end">
+            TOTAL
+          </th>
+
+          <td class="w-15 text-end">
+            <output id="items" class="form-control text-end"></output>
+          </td>
+
+          <td class="w-15 text-end">
+            <output id="total" class="form-control text-end"></output>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+
+    <div class="row my-3">
+      <div class="col text-start">
+        <button type="button" class="btn btn-secondary btn-lg w-75 mx-auto" data-bs-toggle="modal" data-bs-target="#detalle">Ver Pedido</button>
+      </div>
+
+      <div class="col text-end">
+        <button type="submit" class="btn btn-primary btn-lg w-75 mx-auto" disabled>Enviar a Cocina</button>
+      </div>
+    </div>
+  </form>
+
+  <div class="modal fade" tabindex="-1" id="detalle">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Detalle pedido</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Volver"></button>
+        </div>
+        <div class="modal-body">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-1 text-decoration-underline">Mozo:</div>
+              <div class="col"><output class="" id="det_mozo"></output></div>
+            </div>
+            <div class="row mt-2">
+              <div class="col-1 text-decoration-underline">Meza:</div>
+              <div class="col"><output class="" id="det_mesa"></output></div>
+            </div>
+            <div class="row mt-2">
+              <div class="col-1 text-decoration-underline">Pedido:</div>
+            </div>
+            <ul class="row mt-1" id="det_consumible"></ul>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Volver</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  $().ready(function () {
+    $('input[name^="consumible"][name$="[cantidad]"]').on('change', function (ev) {
+      let el = $(ev.target);
+
+      let row = el.closest('tr');
+
+      let importe = el.val() * row.find('[data-precio]').attr('data-precio');
+
+      row.find('input[name^="consumible"][name$="[importe]"]')
+        .val(importe)
+      ;
+
+      row.find('output')
+        .val('$ ' + formatARS(importe))
+      ;
+
+      $('#items').val(
+        $('input[name^="consumible"][name$="[cantidad]"]')
+          .toArray()
+          .map(i => i.value)
+          .reduce((a, i) => a + 1 * i, 0)
+      );
+
+      let total = $('input[name^="consumible"][name$="[importe]"]')
+        .toArray()
+        .map(o => o.value)
+        .reduce((a, i) => a + 1 * i, 0)
+      ;
+
+      $('#total').val('$ ' + formatARS(total));
+
+      $('button[type="submit"]').prop('disabled', ! total);
+    }).trigger('change');
+
+    $('#detalle').on('show.bs.modal', function() {
+      $('#det_mozo').val(
+        $('#mozo option:selected').text()
+      );
+
+      $('#det_mesa').val(
+        $('#mesa option:selected').text()
+      );
+
+      $('#det_consumible').html(
+        $('tbody tr')
+          .toArray()
+          .map(r => {
+            r = $(r);
+
+            let q = + r.find('input[name^="consumible"][name$="[cantidad]"]').val();
+
+            if (q) {
+              let t = r.find('input[name^="consumible"][name$="[titulo]"]').val();
+
+              let i = + r.find('input[name^="consumible"][name$="[importe]"]').val();
+
+              return `<li>${q} unid. de «${t}» por $ ${formatARS(i)}.-</li>`;
+            } else {
+              return null;
+            }
+          })
+          .filter(t => t)
+          .join('')
+      );
+    });
+  });
+</script>
